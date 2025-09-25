@@ -15,10 +15,10 @@
             text-align: center;
         }
         th{
-            background-color: beige;
+            background-color: burlywood;
         }
         tr:nth-child(even){
-            background-color: azure;
+            background-color: beige;
         }
     </style>
 </head>

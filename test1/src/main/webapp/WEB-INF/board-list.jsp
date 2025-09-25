@@ -24,26 +24,21 @@
 </head>
 <body>
     <div id="app">
-        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-		<div>
-			<input v-model="keyword" placeholder="검색어">
-			<button @click="fnInfo">검색</button>
-		</div>
         <div>
             <table>
                 <tr>
-                    <th>학번</th>
-                    <th>이름</th>
-                    <th>학과</th>
-                    <th>학년</th>
-                    <th>성별</th>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>조회수</th>
+                    <th>삭제</th>
                 </tr>
                 <tr v-for="item in list">
-                    <td>{{item.stuNo}}</td>
-                    <td>{{item.stuName}}</td>
-                    <td>{{item.stuDept}}</td>
-                    <td>{{item.stuGrade}}</td>
-                    <td>{{item.stuGender}}</td>
+                    <td>{{item.boardNo}}</td>
+                    <td>{{item.title}}</td>
+                    <td>{{item.userId}}</td>
+                    <td>{{item.cnt}}</td>
+                    <td><button @click="fnRemove(item.boardNo)">삭제</button></td>
                 </tr>
             </table>
         </div>
@@ -56,7 +51,6 @@
         data() {
             return {
                 // 변수 - (key : value)
-				keyword : "",
                 list : []
             };
         },
@@ -66,28 +60,29 @@
                 let self = this;
                 let param = {};
                 $.ajax({
-                    url: "stu-list.dox",
+                    url: "board-list.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-						console.log(data);
+                        console.log(data);
                         self.list = data.list;
                     }
                 });
             },
-            fnInfo: function () {
+            fnRemove: function(boardNumber) {
                 let self = this;
-                let param = {
-					keyword : self.keyword
-				};
+                if(!confirm("정말 삭제하시겠습니까?")) {
+                    return;
+                }
                 $.ajax({
-                    url: "stu-info.dox",
+                    url: "remove-list.dox",
                     dataType: "json",
                     type: "POST",
-                    data: param,
+                    data: {boarnNo : boardNumber},
                     success: function (data) {
-						console.log(data);
+                        alert("삭제되었습니다");
+                        self.fnList();
                     }
                 });
             }
