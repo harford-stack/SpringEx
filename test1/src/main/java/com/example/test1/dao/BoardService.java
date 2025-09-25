@@ -17,6 +17,7 @@ public class BoardService{
 	BoardMapper boardMapper;
 	
 	
+	
 	public HashMap<String, Object> getBoardList(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
