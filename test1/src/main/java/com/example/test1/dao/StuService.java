@@ -61,4 +61,13 @@ public class StuService{
 		resultMap.put("result", "success");
 		return resultMap;
 	}
+
+	public HashMap<String, Object> addStu(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt = stuMapper.insertStu(map);
+		
+		resultMap.put("result", "success");
+		return resultMap;
+	}
 }

@@ -34,6 +34,12 @@ public class StuController {
         return "/stu-view";
     }
 	
+	@RequestMapping("/stu-add.do") 
+	public String addPage(Model model) throws Exception{
+
+        return "/stu-add";
+    }
+	
 	@RequestMapping(value = "/stu-info.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String login(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
@@ -67,6 +73,15 @@ public class StuController {
 	public String stuView(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap = stuService.getStu(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/stu-add.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String stuAdd(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = stuService.addStu(map);
 		
 		return new Gson().toJson(resultMap);
 	}

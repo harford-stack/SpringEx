@@ -28,16 +28,24 @@
         <div>
             <table>
                 <tr>
-                    <th>제목</th>
-                    <td><input type="text" v-model="title"></td>
+                    <th>학번</th>
+                    <td><input v-model="stuNo"></td>
                 </tr>
                 <tr>
-                    <th>작성자</th>
-                    <td><input type="text" v-model="userId"></td>
+                    <th>이름</th>
+                    <td><input v-model="stuName"></td>
                 </tr>
                 <tr>
-                    <th>내용</th>
-                    <td><textarea v-model="contents"></textarea></td>
+                    <th>학과</th>
+                    <td><input v-model="stuDept"></td>
+                </tr>
+                <tr>
+                    <th>학년</th>
+                    <td><input v-model="stuGrade"></td>
+                </tr>
+                <tr>
+                    <th>성별</th>
+                    <td><input v-model="stuGender"></td>
                 </tr>
             </table>
             <div>
@@ -54,9 +62,11 @@
         data() {
             return {
                 // 변수 - (key : value)
-                title : "",
-                userId : "",
-                contents : ""
+                stuNo : "",
+                stuName : "",
+                stuDept : "",
+                stuGrade : "",
+                stuGender : ""
             };
         },
         methods: {
@@ -64,12 +74,14 @@
             fnAdd: function () {
                 let self = this;
                 let param = {
-                    title : self.title,
-                    userId : self.userId,
-                    contents : self.contents
+                    stuNo : self.stuNo,
+                    stuName : self.stuName,
+                    stuDept : self.stuDept,
+                    stuGrade : self.stuGrade,
+                    stuGender : self.stuGender
                 };
                 $.ajax({
-                    url: "board-add.dox",
+                    url: "stu-add.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
@@ -80,7 +92,7 @@
                 });
             },
             fnBack: function() {
-                location.href="board-list.do";
+                location.href="stu-list.do";
             }
         }, // methods
         mounted() {

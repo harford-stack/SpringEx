@@ -50,6 +50,7 @@
                 </tr>
             </table>
         </div>
+        <div><button @click="fnAdd">추가</button></div>
     </div>
 </body>
 </html>
@@ -112,6 +113,9 @@
             },
             fnView: function(stuNo) {
                 pageChange("stu-view.do", {stuNo : stuNo});
+            },
+            fnAdd: function() {
+                location.href="stu-add.do";
             }
         }, // methods
         mounted() {
