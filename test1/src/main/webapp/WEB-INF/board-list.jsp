@@ -7,6 +7,7 @@
     <title>Document</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="/js/page-change.js"></script>
     <style>
         table, tr, td, th{
             border : 1px solid black;
@@ -25,23 +26,39 @@
 <body>
     <div id="app">
         <div>
+            <select v-model="kind" @change="fnList">
+                <option value="">:: 전체 ::</option>
+                <option value="1">:: 공지사항 ::</option>
+                <option value="2">:: 자유게시판 ::</option>
+                <option value="3">:: 문의게시판 ::</option>
+            </select>
+            <select v-model="order" @change="fnList">
+                <option value="1">:: 번호순 ::</option>
+                <option value="2">:: 제목순 ::</option>
+                <option value="3">:: 조회수 ::</option>
+            </select>
+        </div>
+        <div>
             <table>
                 <tr>
                     <th>번호</th>
                     <th>제목</th>
                     <th>작성자</th>
                     <th>조회수</th>
+                    <th>작성일</th>
                     <th>삭제</th>
                 </tr>
                 <tr v-for="item in list">
                     <td>{{item.boardNo}}</td>
-                    <td>{{item.title}}</td>
+                    <td><a href="javascript:;" @click="fnView(item.boardNo)">{{item.title}}</a></td>
                     <td>{{item.userId}}</td>
                     <td>{{item.cnt}}</td>
+                    <td>{{item.cdate}}</td>
                     <td><button @click="fnRemove(item.boardNo)">삭제</button></td>
                 </tr>
             </table>
         </div>
+        <div><button @click="fnAdd">추가</button></div>
     </div>
 </body>
 </html>
@@ -51,14 +68,19 @@
         data() {
             return {
                 // 변수 - (key : value)
-                list : []
+                list : [],
+                kind : "",
+                order : "1"
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
             fnList: function () {
                 let self = this;
-                let param = {};
+                let param = {
+                    kind : self.kind,
+                    order : self.order
+                };
                 $.ajax({
                     url: "board-list.dox",
                     dataType: "json",
@@ -70,21 +92,27 @@
                     }
                 });
             },
-            fnRemove: function(boardNumber) {
+            fnRemove: function(boardNo) {
                 let self = this;
-                if(!confirm("정말 삭제하시겠습니까?")) {
-                    return;
-                }
+                let param = {
+                    boardNo : boardNo
+                };
                 $.ajax({
-                    url: "remove-list.dox",
+                    url: "board-delete.dox",
                     dataType: "json",
                     type: "POST",
-                    data: {boarnNo : boardNumber},
+                    data: param,
                     success: function (data) {
                         alert("삭제되었습니다");
                         self.fnList();
                     }
                 });
+            },
+            fnAdd: function() {
+                location.href="board-add.do";
+            },
+            fnView: function(boardNo) {
+                pageChange("board-view.do", {boardNo : boardNo});
             }
         }, // methods
         mounted() {
