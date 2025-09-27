@@ -38,6 +38,7 @@
                     <th>학과</th>
                     <th>학년</th>
                     <th>성별</th>
+                    <th>수정</th>
                     <th>삭제</th>
                 </tr>
                 <tr v-for="item in list">
@@ -46,6 +47,7 @@
                     <td>{{item.stuDept}}</td>
                     <td>{{item.stuGrade}}</td>
                     <td>{{item.stuGender}}</td>
+                    <td><button @click="fnEdit(item.stuNo)">수정</button></td>
                     <td><button @click="fnRemove(item.stuNo)">삭제</button></td>
                 </tr>
             </table>
@@ -116,6 +118,9 @@
             },
             fnAdd: function() {
                 location.href="stu-add.do";
+            },
+            fnEdit: function() {
+                pageChange("stu-edit.do", {stuNo : stuNo});
             }
         }, // methods
         mounted() {

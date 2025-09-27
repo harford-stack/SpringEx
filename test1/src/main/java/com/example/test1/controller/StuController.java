@@ -40,6 +40,13 @@ public class StuController {
         return "/stu-add";
     }
 	
+	@RequestMapping("/stu-edit.do") 
+	public String edit(HttpServletRequest request, Model model, @RequestParam HashMap<String, Object> map) throws Exception{
+		System.out.println(map.get("stuNo"));
+		request.setAttribute("stuNo", map.get("stuNo"));
+        return "/stu-edit";
+    }
+	
 	@RequestMapping(value = "/stu-info.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String login(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
