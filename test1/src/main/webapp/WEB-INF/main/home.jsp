@@ -15,36 +15,21 @@
             text-align: center;
         }
         th{
-            background-color: burlywood;
+            background-color: beige;
         }
         tr:nth-child(even){
-            background-color: beige;
+            background-color: azure;
         }
     </style>
 </head>
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <div>
-            <table>
-                <tr>
-                    <th>제목</th>
-                    <td><input type="text" v-model="title"></td>
-                </tr>
-                <tr>
-                    <th>작성자</th>
-                    <td><input type="text" v-model="userId"></td>
-                </tr>
-                <tr>
-                    <th>내용</th>
-                    <td><textarea v-model="contents"></textarea></td>
-                </tr>
-            </table>
-            <div>
-                <button @click="fnAdd">저장</button>
-                <button @click="fnBack">되돌아가기</button>
-            </div>
-        </div>
+         {{sessionName}}님 환영합니다! 메인페이지 입니다!
+         <div>
+            <a href="/board-list.do"><button>게시판으로 이동</button></a>
+            <button @click="fnLogout">로그아웃</button>
+         </div>
     </div>
 </body>
 </html>
@@ -54,43 +39,30 @@
         data() {
             return {
                 // 변수 - (key : value)
-                title : "",
-                userId : "",
-                contents : "",
-                sessionId : "${sessionId}"
+                sessionId : "${sessionId}",
+                sessionName : "${sessionName}"
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnAdd: function () {
+            fnLogout : function () {
                 let self = this;
-                let param = {
-                    title : self.title,
-                    userId : self.userId,
-                    contents : self.contents
-                };
+                let param = {};
                 $.ajax({
-                    url: "board-add.dox",
+                    url: "/member/logout.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-                        alert("등록되었습니다");
-                        self.fnBack();
+                        alert(data.msg);
+                        location.href="/member/login.do";
                     }
                 });
-            },
-            fnBack: function() {
-                location.href="board-list.do";
             }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-            if(self.sessionId == ""){
-                alert("로그인 후 이용해 주세요");
-                location.href="/member/login.do";
-            }
         }
     });
 

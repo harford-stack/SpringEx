@@ -18,8 +18,14 @@ import com.google.gson.Gson;
 @Controller
 public class BoardController {
 	
+	private final StuController stuController;
+	
 	@Autowired
 	BoardService boardService;
+	
+	BoardController(StuController stuController) {
+        this.stuController = stuController;
+    }
 	
 	@RequestMapping("/board-list.do") 
 	public String enter(Model model) throws Exception{
