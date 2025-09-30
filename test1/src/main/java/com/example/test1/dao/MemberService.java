@@ -63,4 +63,18 @@ public class MemberService {
 		return resultMap;
 	}
 	
+	public HashMap<String, Object> memberInsert(HashMap<String, Object> map){
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt = memberMapeer.memberAdd(map);
+		
+		if(cnt < 1) {
+			resultMap.put("result", "fail");
+		} else {
+			resultMap.put("result", "success");
+		}
+		
+		return resultMap;
+	}
+	
+	
 }

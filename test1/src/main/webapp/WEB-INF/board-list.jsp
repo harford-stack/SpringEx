@@ -26,6 +26,15 @@
 <body>
     <div id="app">
         <div>
+            <select v-model="searchOption">
+                <option value="all">:: 전체 ::</option>
+                <option value="title">:: 제목 ::</option>
+                <option value="id">:: 작성자 ::</option>
+            </select>
+            <input v-model="keyword">
+            <button @click="fnList">검색</button>
+        </div>
+        <div>
             <select v-model="kind" @change="fnList">
                 <option value="">:: 전체 ::</option>
                 <option value="1">:: 공지사항 ::</option>
@@ -50,7 +59,10 @@
                 </tr>
                 <tr v-for="item in list">
                     <td>{{item.boardNo}}</td>
-                    <td><a href="javascript:;" @click="fnView(item.boardNo)">{{item.title}}</a></td>
+                    <td>
+                        <a href="javascript:;" @click="fnView(item.boardNo)">{{item.title}}</a>
+                        <span v-if="item.commentCnt != 0" style="color:red">[{{item.commentCnt}}]</span>
+                    </td>
                     <td>{{item.userId}}</td>
                     <td>{{item.cnt}}</td>
                     <td>{{item.cdate}}</td>
@@ -75,6 +87,8 @@
                 list : [],
                 kind : "",
                 order : "1",
+                keyword : "", // 검색어
+                searchOption : "all", // 검색 옵션 (기본 : 전체)
                 sessionId : "${sessionId}",
                 status : "${sessionStatus}"
             };
@@ -85,7 +99,9 @@
                 let self = this;
                 let param = {
                     kind : self.kind,
-                    order : self.order
+                    order : self.order,
+                    keyword : self.keyword,
+                    searchOption : self.searchOption
                 };
                 $.ajax({
                     url: "board-list.dox",
@@ -116,6 +132,21 @@
             },
             fnView: function(boardNo) {
                 pageChange("board-view.do", {boardNo : boardNo});
+            },
+            fnSearch: function () {
+                let self = this;
+                let param = {
+					keyword : self.keyword
+				};
+                $.ajax({
+                    url: "stu-info.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+						console.log(data);
+                    }
+                });
             }
         }, // methods
         mounted() {

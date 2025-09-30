@@ -20,15 +20,17 @@
 	</delete>
 	
 	<select id="selectStu" parameterType="hashmap" resultType="com.example.test1.model.Stu">
-		SELECT
-		    S.STU_NO,
-		    STU_NAME,
-		    STU_DEPT,
-		    NVL(TO_CHAR(AVG(ENR_GRADE)), '0') AS AVGENR
+		SELECT 
+		    S.STU_NO, S.STU_NAME, S.STU_DEPT, NVL(AVG(ENR_GRADE), 0) AS AVGENR,
+		    (SELECT ROUND(AVG(ENR_GRADE), 1) FROM ENROL) AS TOTALENR,
+		    TOTALENR2
 		FROM STUDENT S
 		LEFT JOIN ENROL E ON S.STU_NO = E.STU_NO
-		GROUP BY S.STU_NO, STU_NAME, STU_DEPT
-		HAVING S.STU_NO = #{stuNo}
+		INNER JOIN (
+		    SELECT ROUND(AVG(ENR_GRADE), 1) AS TOTALENR2 FROM ENROL
+		) T ON 1=1
+		WHERE S.STU_NO = #{stuNo}
+		GROUP BY S.STU_NO, S.STU_NAME, S.STU_DEPT, TOTALENR2
 	</select>
 	
 	<insert id="insertStu" parameterType="hashmap">
