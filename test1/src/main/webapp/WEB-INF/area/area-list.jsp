@@ -68,13 +68,25 @@
                 </tr>
             </table>
             <div>
-                <!-- <a v-if="page != 1" id="index" href="javascript:;" @click="fnMove(-1)">◀</a> -->
-                <a @click="fnPage(num)" id="index" href="javascript:;" v-for="num in index">
+                <!-- 맨 처음 페이지로 이동 -->
+                <a v-if="page !== 1" id="index" href="javascript:;" @click="fnGoToFirstPage()">⏪</a>
+                
+                <!-- 이전 페이지 그룹으로 이동 -->
+                <!-- computed 대신 methods 호출 -->
+                <a v-if="checkHasPrevGroup()" id="index" href="javascript:;" @click="fnMoveGroup(-1)">◀️</a>
+                
+                <!-- 페이지 번호 표시 -->
+                <!-- computed 대신 methods 호출 -->
+                <a @click="fnPage(num)" id="index" href="javascript:;" v-for="num in getPageNumbers()" :key="num">
                     <span :class="{active : num == page}">{{num}}</span>
-                    <!-- <span v-if="num == page" class="active">{{num}}</span>
-                    <span v-else>{{num}}</span> -->
                 </a>
-                <!-- <a v-if="page != index" id="index" href="javascript:;" @click="fnMove(1)">▶</a> -->
+                
+                <!-- 다음 페이지 그룹으로 이동 -->
+                <!-- computed 대신 methods 호출 -->
+                <a v-if="checkHasNextGroup()" id="index" href="javascript:;" @click="fnMoveGroup(1)">▶️</a>
+                
+                <!-- 맨 마지막 페이지로 이동 -->
+                <a v-if="page !== index" id="index" href="javascript:;" @click="fnGoToLastPage()">⏩</a>
             </div>
         </div>
     </div>
@@ -91,7 +103,9 @@
                 page : 1, // 현재 페이지
                 index : 0, // 최대 페이지 값
                 siList : [],
-                si : "" // 선택한 시(도)의 값
+                si : "", // 선택한 시(도)의 값
+                pageGroupSize: 10, // 한 번에 표시할 페이지 번호 개수
+                currentPageGroup: 1 // 현재 페이지 그룹
             };
         },
         methods: {
@@ -112,6 +126,8 @@
                         console.log(data);
                         self.list = data.list;
                         self.index = Math.ceil(data.cnt / self.pageSize);
+                        // 현재 페이지 그룹 업데이트 (만약 현재 페이지가 변경되었을 경우)
+                        self.currentPageGroup = Math.ceil(self.page / self.pageGroupSize);
                     }
                 });
             },
@@ -119,12 +135,14 @@
                 let self = this;
                 self.page = num;
                 self.fnList();
+                // 페이지 그룹 업데이트
+                self.currentPageGroup = Math.ceil(num / self.pageGroupSize);
             },
-            fnMove: function(move) {
-                let self = this;
-                self.page += move;
-                self.fnList();
-            },
+            // fnMove: function(move) {
+            //     let self = this;
+            //     self.page += move;
+            //     self.fnList();
+            // },
             fnSiList: function () {
                 let self = this;
                 let param = {
@@ -138,8 +156,72 @@
                         self.siList = data.list;
                     }
                 });
+            },
+            // 페이지 그룹 이동 함수
+            fnMoveGroup: function(move) {
+                let self = this;
+                // 이동할 그룹의 첫 페이지 계산
+                let targetPageGroup = self.currentPageGroup + move;
+
+                // 유효성 검사
+                if (targetPageGroup < 1) targetPageGroup = 1;
+                const maxPageGroup = Math.ceil(self.index / self.pageGroupSize);
+                if (targetPageGroup > maxPageGroup) targetPageGroup = maxPageGroup;
+                
+                self.currentPageGroup = targetPageGroup;
+                self.page = (self.currentPageGroup - 1) * self.pageGroupSize + 1;
+
+                self.fnList();
+            },
+            // 맨 처음 페이지로 이동
+            fnGoToFirstPage: function() {
+                let self = this;
+                self.page = 1;
+                self.currentPageGroup = 1; // 맨 처음 페이지는 항상 첫 번째 그룹에 속합니다.
+                self.fnList();
+            },
+            // 맨 마지막 페이지로 이동
+            fnGoToLastPage: function() {
+                let self = this;
+                self.page = self.index; // index는 총 페이지 수입니다.
+                self.currentPageGroup = Math.ceil(self.index / self.pageGroupSize); // 마지막 페이지가 속한 그룹으로 이동
+                self.fnList();
+            },
+            // 현재 페이지 그룹에 표시할 페이지 번호 배열 계산
+            getPageNumbers: function() {
+                let self = this;
+                let start = (self.currentPageGroup - 1) * self.pageGroupSize + 1;
+                let end = Math.min(start + self.pageGroupSize - 1, self.index);
+                
+                let pages = [];
+                for(let i = start; i <= end; i++) {
+                    pages.push(i);
+                }
+                return pages;
+            },
+            // 이전 페이지 그룹이 있는지 확인하는 함수
+            checkHasPrevGroup: function() {
+                return this.currentPageGroup > 1;
+            },
+            // 다음 페이지 그룹이 있는지 확인하는 함수
+            checkHasNextGroup: function() {
+                return this.currentPageGroup < Math.ceil(this.index / this.pageGroupSize);
             }
         }, // methods
+        // computed: {
+        //     // 계산된 속성으로 현재 표시할 페이지 번호들 반환
+        //     pageNumbers: function() {
+        //         return this.getPageNumbers();
+        //     },
+        //     // 이전 페이지 그룹이 있는지 확인
+        //     hasPrevGroup: function() {
+        //         return this.currentPageGroup > 1;
+        //     },
+        //     // 다음 페이지 그룹이 있는지 확인
+        //     hasNextGroup: function() {
+        //         return this.currentPageGroup < Math.ceil(this.index / this.pageGroupSize);
+        //     }
+        // },
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
