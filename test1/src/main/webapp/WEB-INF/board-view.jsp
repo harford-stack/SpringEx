@@ -68,9 +68,9 @@
             <table>
                 <th>댓글 입력</th>
                 <td>
-                    <textarea cols="40" rows="4"></textarea>
+                    <textarea v-model="contents" cols="40" rows="4"></textarea>
                 </td>
-                <td><button>저장</button></td>
+                <td><button @click="fnCommentAdd">저장</button></td>
             </table>
         </div>
     </div>
@@ -84,7 +84,9 @@
                 // 변수 - (key : value)
                 boardNo : "${boardNo}",
                 info : {},
-                commentList : []
+                commentList : [],
+                contents : "",
+                sessionId : "${sessionId}" // MemberService.java에서 선언
             };
         },
         methods: {
@@ -103,6 +105,26 @@
                         console.log(data);
                         self.info = data.info;
                         self.commentList = data.commentList;
+                    }
+                });
+            },
+            fnCommentAdd: function() {
+                let self = this;
+                let param = {
+                    boardNo : self.boardNo,
+                    id : self.sessionId,
+                    contents : self.contents
+                };
+                $.ajax({
+                    url: "/comment/add.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        console.log(data);
+                        alert(data.msg);
+                        self.contents = "";
+                        self.fnBoardInfo();
                     }
                 });
             }

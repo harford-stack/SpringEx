@@ -5,7 +5,14 @@
 <mapper namespace="com.example.test1.mapper.BoardMapper">
 	<select id="boardList" parameterType="hashmap" resultType="com.example.test1.model.Board">
 		SELECT
-		    B.*, TO_CHAR(CDATETIME, 'YYYY-MM-DD') AS CDATE, NVL(CCNT, 0) AS COMMENTCNT
+		    B.*, 
+		    DECODE(
+				TO_CHAR(CDATETIME, 'YYYY-MM-DD'), 
+				TO_CHAR(SYSDATE, 'YYYY-MM-DD'), 
+				TO_CHAR(CDATETIME, 'HH24:MI:SS'), 
+				TO_CHAR(CDATETIME, 'YYYY-MM-DD')
+			) AS CDATE, 
+		    NVL(CCNT, 0) AS COMMENTCNT
 		FROM TBL_BOARD B
 		LEFT JOIN (
 		    SELECT BOARDNO, COUNT(*) AS CCNT
@@ -39,6 +46,33 @@
 		<if test="order == 3">
 			ORDER BY CNT DESC
 		</if>
+		<if test="order == 4">
+			ORDER BY CDATETIME DESC
+		</if>
+		OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+
+	</select>
+	
+	<select id="boardCnt" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) AS CNT
+		FROM TBL_BOARD B
+		WHERE 1=1
+		<if test="kind != '' and kind != null">
+			AND KIND = #{kind}
+		</if>
+		
+		<if test="searchOption == 'all'">
+			AND (
+				TITLE LIKE '%' || #{keyword} || '%' OR
+				USERID LIKE '%' || #{keyword} || '%'
+			)
+		</if>
+		<if test="searchOption == 'title'">
+			AND TITLE LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="searchOption == 'id'">
+			AND USERID LIKE '%' || #{keyword} || '%'
+		</if>
 	</select>
 	
 	<delete id="deleteBoard" parameterType="hashmap">
@@ -62,7 +96,18 @@
 		FROM TBL_COMMENT C
 		INNER JOIN TBL_USER U ON C.USERID = U.USERID
 		WHERE C.BOARDNO = #{boardNo}
+		ORDER BY C.CDATETIME
 	</select>
-
+	
+	<insert id="insertComment" parameterType="hashmap">
+		INSERT INTO TBL_COMMENT
+		VALUES(COMMENT_SEQ.NEXTVAL, #{boardNo}, #{contents}, #{id}, 0, NULL, SYSDATE, SYSDATE)
+	</insert>
+	
+	<update id="updateCnt" parameterType="hashmap">
+		UPDATE TBL_BOARD
+		SET CNT = CNT + 1
+		WHERE BOARDNO = #{boardNo}
+	</update>
 	
 </mapper>

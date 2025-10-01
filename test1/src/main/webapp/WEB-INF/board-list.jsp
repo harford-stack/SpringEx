@@ -21,6 +21,14 @@
         tr:nth-child(even){
             background-color: beige;
         }
+        #index {
+            margin-right: 5px;
+            text-decoration: none;
+        }
+        .active {
+            color : black;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -35,16 +43,24 @@
             <button @click="fnList">검색</button>
         </div>
         <div>
+            <select v-model="pageSize" @change="fnList">
+                <option value="5">5개씩</option>
+                <option value="10">10개씩</option>
+                <option value="20">20개씩</option>
+            </select>
+
             <select v-model="kind" @change="fnList">
                 <option value="">:: 전체 ::</option>
                 <option value="1">:: 공지사항 ::</option>
                 <option value="2">:: 자유게시판 ::</option>
                 <option value="3">:: 문의게시판 ::</option>
             </select>
+
             <select v-model="order" @change="fnList">
                 <option value="1">:: 번호순 ::</option>
                 <option value="2">:: 제목순 ::</option>
                 <option value="3">:: 조회수 ::</option>
+                <option value="4">:: 시간순 ::</option>
             </select>
         </div>
         <div>
@@ -71,6 +87,15 @@
                     </td>
                 </tr>
             </table>
+            <div>
+                <a v-if="page != 1" id="index" href="javascript:;" @click="fnMove(-1)">◀</a>
+                <a @click="fnPage(num)" id="index" href="javascript:;" v-for="num in index">
+                    <span :class="{active : num == page}">{{num}}</span>
+                    <!-- <span v-if="num == page" class="active">{{num}}</span>
+                    <span v-else>{{num}}</span> -->
+                </a>
+                <a v-if="page != index" id="index" href="javascript:;" @click="fnMove(1)">▶</a>
+            </div>
         </div>
         <div>
             <a href="board-add.do"><button>글쓰기</button></a>
@@ -86,9 +111,12 @@
                 // 변수 - (key : value)
                 list : [],
                 kind : "",
-                order : "1",
+                order : "4",
                 keyword : "", // 검색어
                 searchOption : "all", // 검색 옵션 (기본 : 전체)
+                pageSize : 5, // 한 페이지에 출력할 개수
+                page : 1, // 현재 페이지
+                index : 0, // 최대 페이지 값
                 sessionId : "${sessionId}",
                 status : "${sessionStatus}"
             };
@@ -101,7 +129,9 @@
                     kind : self.kind,
                     order : self.order,
                     keyword : self.keyword,
-                    searchOption : self.searchOption
+                    searchOption : self.searchOption,
+                    pageSize : self.pageSize,
+                    page : (self.page-1) * self.pageSize
                 };
                 $.ajax({
                     url: "board-list.dox",
@@ -111,6 +141,7 @@
                     success: function (data) {
                         console.log(data);
                         self.list = data.list;
+                        self.index = Math.ceil(data.cnt / self.pageSize);
                     }
                 });
             },
@@ -147,6 +178,16 @@
 						console.log(data);
                     }
                 });
+            },
+            fnPage: function(num) {
+                let self = this;
+                self.page = num;
+                self.fnList();
+            },
+            fnMove: function(move) {
+                let self = this;
+                self.page += move;
+                self.fnList();
             }
         }, // methods
         mounted() {
