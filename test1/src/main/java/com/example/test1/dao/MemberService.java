@@ -14,14 +14,14 @@ import com.example.test1.model.Member;
 public class MemberService {
 	
 	@Autowired
-	MemberMapper memberMapeer;
+	MemberMapper memberMapper;
 	
 	@Autowired
 	HttpSession session;
 	
 	public HashMap<String, Object> login(HashMap<String, Object> map){
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		Member member = memberMapeer.memberLogin(map);
+		Member member = memberMapper.memberLogin(map);
 		String message = member != null ? "로그인 성공!" : "로그인 실패!";
 		String result = member != null ? "success" : "fail";
 		
@@ -39,7 +39,7 @@ public class MemberService {
 	
 	public HashMap<String, Object> check(HashMap<String, Object> map){
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		Member member = memberMapeer.memberCheck(map);
+		Member member = memberMapper.memberCheck(map);
 		
 		String result = member != null ? "true" : "false";
 		resultMap.put("result", result);
@@ -65,7 +65,7 @@ public class MemberService {
 	
 	public HashMap<String, Object> memberInsert(HashMap<String, Object> map){
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		int cnt = memberMapeer.memberAdd(map);
+		int cnt = memberMapper.memberAdd(map);
 		
 		if(cnt < 1) {
 			resultMap.put("result", "fail");
@@ -74,6 +74,11 @@ public class MemberService {
 		}
 		
 		return resultMap;
+	}
+
+	public void addMemberImg(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		int cnt = memberMapper.insertMemberImg(map);
 	}
 	
 	

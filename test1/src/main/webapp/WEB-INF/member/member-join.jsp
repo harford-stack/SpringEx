@@ -51,6 +51,11 @@
             </label>
         </div>
         <div>
+            <label>
+                파일첨부 : <input type="file" id="file1" name="file1" accept=".jpg, .png">
+            </label>
+        </div>
+        <div>
             주소 : <input v-model="addr" disabled> <button @click="fnAddr">주소검색</button>
         </div>
         <div>
@@ -263,7 +268,12 @@
                     success: function (data) {
                         if(data.result == "success"){
                             alert("가입되었습니다.");
-                            location.href="/member/login.do";
+                            console.log(data.userId);
+                            var form = new FormData();
+                            form.append( "file1",  $("#file1")[0].files[0] );
+                            form.append( "userId",  data.userId);
+                            self.upload(form);
+                            // location.href="/member/login.do";
                         } else {
                             alert("오류가 발생했습니다.");
                         }
@@ -278,6 +288,19 @@
                 } else {
                     alert("문자 인증에 실패했습니다.");
                 }
+            },
+            upload : function(form){
+                var self = this;
+                $.ajax({
+                    url : "/userFileUpload.dox"
+                    , type : "POST"
+                    , processData : false
+                    , contentType : false
+                    , data : form
+                    , success:function(response) { 
+                        console.log(data);
+                    }	           
+                });
             }
         }, // methods
         mounted() {

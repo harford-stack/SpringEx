@@ -9,6 +9,11 @@ public class Member {
 	private String nickName;
 	private String status;
 	
+	private String fileNo;
+	private String filePath;
+	private String fileName;
+	
+	
 	public String getUserId() {
 		return userId;
 	}
@@ -44,5 +49,23 @@ public class Member {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public String getFileNo() {
+		return fileNo;
+	}
+	public void setFileNo(String fileNo) {
+		this.fileNo = fileNo;
+	}
+	public String getFilePath() {
+		return filePath;
+	}
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+	public String getFileName() {
+		return fileName;
+	}
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 }

@@ -20,9 +20,9 @@
         th{
             background-color: burlywood;
         }
-        tr:nth-child(even){
+        /* tr:nth-child(even){
             background-color: beige;
-        }
+        } */
         input{
             width: 400px;
         }
@@ -42,7 +42,11 @@
                 </tr>
                 <tr>
                     <th>작성자</th>
-                    <td><input type="text" v-model="userId"></td>
+                    <td>{{userId}}</td>
+                </tr>
+                <tr>
+                    <th>파일첨부</th>
+                    <td><input type="file" id="file1" name="file1" accept=".jpg, .png"></td>
                 </tr>
                 <tr>
                     <th>내용</th>
@@ -64,7 +68,7 @@
             return {
                 // 변수 - (key : value)
                 title : "",
-                userId : "",
+                userId : "${sessionId}",
                 contents : "",
                 sessionId : "${sessionId}"
             };
@@ -85,8 +89,26 @@
                     data: param,
                     success: function (data) {
                         alert("등록되었습니다");
-                        self.fnBack();
+                        console.log(data.boardNo);
+                        var form = new FormData();
+                        form.append( "file1",  $("#file1")[0].files[0] );
+                        form.append( "boardNo",  data.boardNo);
+                        self.upload(form);  
+                        // self.fnBack();
                     }
+                });
+            },
+            upload : function(form){
+                var self = this;
+                $.ajax({
+                    url : "/fileUpload.dox"
+                    , type : "POST"
+                    , processData : false
+                    , contentType : false
+                    , data : form
+                    , success:function(response) { 
+                        console.log(data);
+                    }	           
                 });
             },
             fnBack: function() {

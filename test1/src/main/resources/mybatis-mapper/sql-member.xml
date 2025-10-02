@@ -20,4 +20,15 @@
 		VALUES(#{id}, #{pwd}, #{name}, NULL, NULL, NULL, #{addr}, #{phone}, NULL, #{gender}, #{status}, SYSDATE, SYSDATE)
 	</insert>
 	
+	<insert id="insertMemberImg" parameterType="hashmap">
+		INSERT INTO TBL_USER_FILE
+		VALUES (USERFILE_SEQ.NEXTVAL, #{userId}, #{path}, #{fileName}, #{orgName}, #{size}, #{ext})
+	</insert>
+	
+	<select id="selectFileList" parameterType="hashmap" resultType="com.example.test1.model.Member">
+		SELECT *
+		FROM TBL_USER_FILE
+		WHERE USERID = #{userId}
+	</select>
+	
 </mapper>

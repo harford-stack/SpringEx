@@ -66,6 +66,7 @@
         <div>
             <table>
                 <tr>
+                    <th><input type="checkbox" @click="fnAllCheck()"></th>
                     <th>번호</th>
                     <th>제목</th>
                     <th>작성자</th>
@@ -74,6 +75,9 @@
                     <th>삭제</th>
                 </tr>
                 <tr v-for="item in list">
+                    <td>
+                        <input type="checkbox" :value="item.boardNo" v-model="selectItem">
+                    </td>
                     <td>{{item.boardNo}}</td>
                     <td>
                         <a href="javascript:;" @click="fnView(item.boardNo)">{{item.title}}</a>
@@ -99,6 +103,7 @@
         </div>
         <div>
             <a href="board-add.do"><button>글쓰기</button></a>
+            <button @click="fnAllRemove">선택 삭제</button>
         </div>
     </div>
 </body>
@@ -118,7 +123,9 @@
                 page : 1, // 현재 페이지
                 index : 0, // 최대 페이지 값
                 sessionId : "${sessionId}",
-                status : "${sessionStatus}"
+                status : "${sessionStatus}",
+                selectItem : [],
+                selectFlg : false
             };
         },
         methods: {
@@ -188,6 +195,37 @@
                 let self = this;
                 self.page += move;
                 self.fnList();
+            },
+            fnAllRemove: function() {
+                let self = this;
+                // console.log(self.selectItem);
+                var fList = JSON.stringify(self.selectItem);
+                var param = {selectItem : fList};
+
+                $.ajax({
+                    url: "/board/deleteList.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        alert("삭제되었습니다.");
+                        self.fnList();
+                    }
+                });
+            },
+            fnAllCheck: function() {
+                let self = this;
+                self.selectFlg = !self.selectFlg;
+
+                if(self.selectFlg) {
+                    self.selectItem = [];
+                    for(let i=0; i<self.list.length; i++) {
+                        self.selectItem.push(self.list[i].boardNo);
+                    }
+                } else {
+                    self.selectItem = [];
+                }
+                // 전체 선택 상태에서 하나라도 체크 해제되면 맨위 체크박스도 해제하는 거 해보기
             }
         }, // methods
         mounted() {

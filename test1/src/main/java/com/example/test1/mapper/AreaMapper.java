@@ -20,4 +20,10 @@ public interface AreaMapper {
 	// 시/도 리스트
 	List<Area> siList(HashMap<String, Object> map);
 	
+	// 구 리스트
+	List<Area> guList(HashMap<String, Object> map);
+	
+	// 동 리스트
+	List<Area> dongList(HashMap<String, Object> map);
+	
 }

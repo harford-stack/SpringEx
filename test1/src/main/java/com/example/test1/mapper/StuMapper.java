@@ -20,4 +20,6 @@ public interface StuMapper {
 
 	int insertStu(HashMap<String, Object> map);
 	
+	int deleteStudentList(HashMap<String, Object> map);
+	
 }
