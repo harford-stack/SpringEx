@@ -80,7 +80,7 @@ public class MemberController {
 	}
 	
 	@RequestMapping("/userFileUpload.dox")
-	public String result(@RequestParam("file1") MultipartFile multi, @RequestParam("userId") int userId, HttpServletRequest request,HttpServletResponse response, Model model)
+	public String result(@RequestParam("file1") MultipartFile multi, @RequestParam("userId") String userId, HttpServletRequest request,HttpServletResponse response, Model model)
 	{
 		String url = null;
 		String path="c:\\img";
