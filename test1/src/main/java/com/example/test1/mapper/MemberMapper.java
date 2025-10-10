@@ -25,4 +25,14 @@ public interface MemberMapper {
 	// 첨부파일 목록
 	List<Board> selectFileList(HashMap<String, Object> map);
 	
+	// 회원 목록 (관리자)
+	List<Member> selectMemberList(HashMap<String, Object> map);
+	
+	// 로그인 성공 시 cnt 초기화
+	int cntInit(HashMap<String, Object> map);
+	
+	// 로그인 실패 시 cnt 1 증가
+	int cntIncrease(HashMap<String, Object> map);
+	
+	
 }

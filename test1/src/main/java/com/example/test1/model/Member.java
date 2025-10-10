@@ -8,6 +8,9 @@ public class Member {
 	private String birth;
 	private String nickName;
 	private String status;
+	private String gender;
+	private int cnt;
+	private String cBirth;
 	
 	private String fileNo;
 	private String filePath;
@@ -67,5 +70,23 @@ public class Member {
 	}
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+	public int getCnt() {
+		return cnt;
+	}
+	public void setCnt(int cnt) {
+		this.cnt = cnt;
+	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	public String getcBirth() {
+		return cBirth;
+	}
+	public void setcBirth(String cBirth) {
+		this.cBirth = cBirth;
 	}
 }

@@ -15,30 +15,44 @@
             text-align: center;
         }
         th{
-            background-color: beige;
+            background-color: burlywood;
         }
         tr:nth-child(even){
-            background-color: azure;
+            background-color: beige;
         }
     </style>
 </head>
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-		<div>
-            <div>
-                <label>아이디 : <input v-model="id"></label>
-            </div>
-            <div>
-                <label>비밀번호 : <input type="password" v-model="pwd"></label>
-            </div>
-            <div>
-                <button @click="fnLogin">로그인</button>
-                <a href="/member/join.do"><button>회원가입</button></a>
-            </div>
+        <div>
+            <table>
+                <tr>
+                    <th>아이디</th>
+                    <td>{{info.userId}}</td>
+                </tr>
+                <tr>
+                    <th>이름</th>
+                    <td>{{info.name}}</td>
+                </tr>
+                <tr>
+                    <th>닉네임</th>
+                    <td>{{info.nickName}}</td>
+                </tr>
+                <tr>
+                    <th>생년월일</th>
+                    <td>{{info.cBirth}}</td>
+                </tr>
+                <tr>
+                    <th>성별</th>
+                    <td>{{info.gender}}</td>
+                </tr>
+                <tr>
+                    <th>회원등급</th>
+                    <td>{{info.status}}</td>
+                </tr>
+            </table>
         </div>
-		
-		
     </div>
 </body>
 </html>
@@ -48,28 +62,24 @@
         data() {
             return {
                 // 변수 - (key : value)
-                id : "",
-                pwd : ""
+                userId : "${userId}",
+                info : {}
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnLogin : function () {
+            fnMemberInfo: function () {
                 let self = this;
                 let param = {
-                    id : self.id,
-                    pwd : self.pwd
+                    userId : self.userId
                 };
                 $.ajax({
-                    url: "/member/login.dox",
+                    url: "/mgr/member/view.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-                        alert(data.msg);
-                        if(data.result == "success"){
-                            location.href = data.url;
-                        }
+
                     }
                 });
             }
@@ -77,6 +87,7 @@
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+            self.fnMemberInfo();
         }
     });
 
