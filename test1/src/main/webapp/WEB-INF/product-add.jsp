@@ -17,8 +17,15 @@
         th{
             background-color: burlywood;
         }
-        tr:nth-child(even){
+        /* tr:nth-child(even){
             background-color: beige;
+        } */
+        input{
+            width: 200px;
+        }
+        textarea {
+            width: 200px;
+            height: 100px;
         }
     </style>
 </head>
@@ -26,25 +33,28 @@
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
         <div>
-            <div>
-                음식 종류 :
-                <select v-model="selectMenuName">
-                    <option value="">:: 선택 ::</option>
-                    <option value="10">한식</option>
-                    <option value="20">중식</option>
-                    <option value="30">양식</option>
-                    <option value="40">음료</option>
-                    <option value="50">디저트</option>
-                </select>
-            </div>
             <table>
+                <tr>
+                    <th>음식 종류</th>
+                    <td>
+                        <select v-model="menuPart">
+                            <option v-for="item in menuList" :value="item.menuNo">{{item.menuName}}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>제품 번호</th>
+                    <td>
+                        <input v-model="menuNo">
+                    </td>
+                </tr>
                 <tr>
                     <th>음식 이름</th>
                     <td><input v-model="foodName"></td>
                 </tr>
                 <tr>
                     <th>음식 설명</th>
-                    <td><input v-model="foodInfo"></td>
+                    <td><textarea v-model="foodInfo"></textarea></td>
                 </tr>
                 <tr>
                     <th>음식 가격</th>
@@ -69,7 +79,9 @@
         data() {
             return {
                 // 변수 - (key : value)
-                selectMenuName : "",
+                menuList : [],
+                menuPart : 10,
+                menuNo : "",
                 foodName : "",
                 foodInfo : "",
                 price : ""
@@ -77,13 +89,29 @@
         },
         methods: {
             // 함수(메소드) - (key : function())
+            fnMenuList: function () {
+                let self = this;
+                let param = {
+                    depth : 1
+                };
+                $.ajax({
+                    url: "/product/menu.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                    self.menuList = data.menuList;
+                    }
+                });
+            },
             fnAdd: function () {
                 let self = this;
                 let param = {
-                    selectMenuName : self.selectMenuName,
+                    menuPart : self.menuPart,
                     foodName : self.foodName,
                     foodInfo : self.foodInfo,
-                    price : self.price
+                    price : self.price,
+                    menuNo : self.menuNo
                 };
                 $.ajax({
                     url: "/product/add.dox",
@@ -91,20 +119,25 @@
                     type: "POST",
                     data: param,
                     success: function (data) {
-                        alert("등록되었습니다");
-                        console.log(data.boardNo);
-                        var form = new FormData();
-                        form.append( "file1",  $("#file1")[0].files[0] );
-                        form.append( "boardNo",  data.boardNo);
-                        self.upload(form);  
-                        // self.fnBack();
+                        if(data.result == "success") {
+                            console.log(data.foodNo);
+                            var form = new FormData();
+                            form.append( "file1",  $("#file1")[0].files[0] );
+                            form.append( "foodNo",  data.foodNo);
+                            self.fnUpload(form);
+                            alert("등록되었습니다");
+                            self.fnBack();
+                        } else {
+                            alert("오류가 발생했습니다.");
+                        }
+                        
                     }
                 });
             },
             fnUpload : function(form){
                 var self = this;
                 $.ajax({
-                    url : "/fileUpload.dox"
+                    url : "/product/fileUpload.dox"
                     , type : "POST"
                     , processData : false
                     , contentType : false
@@ -115,12 +148,13 @@
                 });
             },
             fnBack: function() {
-                location.href="product.do";
+                location.href="/product.do";
             }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+            self.fnMenuList();
         }
     });
 
