@@ -6,18 +6,25 @@
 	<select id="memberLogin" parameterType="hashmap" resultType="com.example.test1.model.Member">
 		SELECT *
 		FROM TBL_USER
-		WHERE USERID = #{id} AND PASSWORD = #{pwd}
+		WHERE USERID = #{id}
+		<!-- AND PASSWORD = #{pwd} 해시 적용 후 제거 -->
 	</select>
 	
 	<select id="memberCheck" parameterType="hashmap" resultType="com.example.test1.model.Member">
 		SELECT *
 		FROM TBL_USER
 		WHERE USERID = #{id}
+		<if test="name != '' and name != null">
+			AND NAME = #{name}
+		</if>
+		<if test="phone != '' and phone != null">
+			AND PHONE = #{phone}
+		</if>
 	</select>
 	
 	<insert id="memberAdd" parameterType="hashmap">
 		INSERT INTO TBL_USER
-		VALUES(#{id}, #{pwd}, #{name}, NULL, NULL, NULL, #{addr}, #{phone}, NULL, #{gender}, #{status}, SYSDATE, SYSDATE)
+		VALUES(#{id}, #{hashPwd}, #{name}, NULL, NULL, NULL, #{addr}, #{phone}, NULL, #{gender}, #{status}, SYSDATE, SYSDATE, 0)
 	</insert>
 	
 	<insert id="insertMemberImg" parameterType="hashmap">
@@ -50,6 +57,29 @@
 		UPDATE TBL_USER
 		SET CNT = 0
 		WHERE USERID = #{id}
+	</update>
+	
+	<!-- resultType에 따른 두가지 방법 // id가 pk값이므로 결과는 0아니면 1 -->
+	<select id="authMember1" parameterType="hashmap" resultType="com.example.test1.model.Member">
+		SELECT *
+		FROM TBL_USER
+		WHERE
+			USERID = #{userId} AND NAME = #{name}
+			AND REPLACE(PHONE, '-', '') = #{phone}
+	</select>
+	<select id="authMember2" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM TBL_USER
+		WHERE
+			USERID = #{userId} AND NAME = #{name}
+			AND REPLACE(PHONE, '-', '') = #{phone}
+	</select>
+	
+	<update id="updatePwd" parameterType="hashmap">
+		UPDATE TBL_USER
+		SET
+			PASSWORD = #{hashPwd}
+		WHERE USERID = #{userId}
 	</update>
 	
 </mapper>
