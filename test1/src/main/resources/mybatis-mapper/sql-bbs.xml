@@ -5,9 +5,32 @@
 <mapper namespace="com.example.test1.mapper.BbsMapper">
 	
 	<select id="bbsList" parameterType="hashmap" resultType="com.example.test1.model.Bbs">
-		SELECT *
-		FROM TBL_BBS
+		SELECT
+		    B.*, 
+		    DECODE(
+				TO_CHAR(CDATETIME, 'YYYY-MM-DD'), 
+				TO_CHAR(SYSDATE, 'YYYY-MM-DD'), 
+				TO_CHAR(CDATETIME, 'HH24:MI:SS'), 
+				TO_CHAR(CDATETIME, 'YYYY-MM-DD')
+			) AS CDATE
+		FROM TBL_BBS B
 		ORDER BY BBS_NUM DESC
+	</select>
+	
+	<insert id="insertBbs" parameterType="hashmap" useGeneratedKeys="true" keyColumn="BBS_NUM" keyProperty="bbsNum">
+		INSERT INTO TBL_BBS
+		VALUES(BBS_SEQ.NEXTVAL, #{title}, #{contents}, 0, #{userId}, SYSDATE, SYSDATE)
+	</insert>
+	
+	<delete id="deleteBbs" parameterType="hashmap">
+		DELETE FROM TBL_BBS
+		WHERE BBS_NUM = #{bbsNum}
+	</delete>
+	
+	<select id="selectBbs" parameterType="hashmap" resultType="com.example.test1.model.Bbs">
+		SELECT B.*, TO_CHAR(CDATETIME, 'YYYY-MM-DD') AS CDATE
+		FROM TBL_BBS B
+		WHERE BBS_NUM = #{bbsNum}
 	</select>
 
 </mapper>

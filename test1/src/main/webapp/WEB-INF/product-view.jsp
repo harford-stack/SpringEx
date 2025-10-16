@@ -66,7 +66,7 @@
                 sessionId : "${sessionId}",
                 info : {},
                 fileList : [],
-                num : ""
+                num : 1
             };
         },
         methods: {
@@ -95,7 +95,7 @@
 				    pay_method: "card",
 				    merchant_uid: "merchant_" + new Date().getTime(),
 				    name: self.info.foodName, // 제품 이름
-				    amount: 1, // self.info.price * self.num // 테스트이므로 1원 결제로 진행
+				    amount: 100, // self.info.price * self.num // 테스트이므로 100원 결제로 진행
 				    buyer_tel: "010-0000-0000",
 				  }	, function (rsp) { // callback
 			   	      if (rsp.success) {
@@ -105,7 +105,8 @@
                         self.fnPayHistory(rsp.imp_uid, rsp.paid_amount);
 			   	      } else {
 			   	        // 결제 실패 시
-						alert("실패");
+                        console.error(rsp); // 실패 정보 확인을 위해 콘솔에 출력
+                        alert("결제 실패: " + rsp.error_msg);
 			   	      }
 		   	  	});
             },

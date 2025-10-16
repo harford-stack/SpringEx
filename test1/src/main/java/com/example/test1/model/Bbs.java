@@ -11,6 +11,7 @@ public class Bbs {
 	private int hit;
 	private String userId;
 	private String cdatetime;
+	private String cdate;
 	private String udatetime;
 	
 }

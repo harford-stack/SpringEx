@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.test1.mapper.BbsMapper;
 import com.example.test1.model.Bbs;
+import com.example.test1.model.Board;
+import com.example.test1.model.Comment;
 
 @Service
 public class BbsService {
@@ -21,6 +23,36 @@ public class BbsService {
 		List<Bbs> list = bbsMapper.bbsList(map);
 		
 		resultMap.put("list", list);
+		resultMap.put("result", "success");
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> addBbs(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt = bbsMapper.insertBbs(map);
+		
+		resultMap.put("bbsNum", map.get("bbsNum"));
+		resultMap.put("result", "success");
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> removeBbs(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt = bbsMapper.deleteBbs(map);
+		
+		resultMap.put("result", "success");
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> getBbs(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		Bbs bbs = bbsMapper.selectBbs(map);
+		
+		resultMap.put("info", bbs);
 		resultMap.put("result", "success");
 		return resultMap;
 	}

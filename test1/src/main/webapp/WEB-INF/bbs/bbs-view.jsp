@@ -7,6 +7,7 @@
     <title>Document</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="/js/page-change.js"></script>
     <style>
         table, tr, td, th{
             border : 1px solid black;
@@ -17,9 +18,9 @@
         th{
             background-color: burlywood;
         }
-        tr:nth-child(even){
+        /* tr:nth-child(even){
             background-color: beige;
-        }
+        } */
     </style>
 </head>
 <body>
@@ -28,24 +29,25 @@
         <div>
             <table>
                 <tr>
-                    <th>글번호</th>
                     <th>글제목</th>
-                    <th>글내용</th>
-                    <th>조회수</th>
-                    <th>작성자</th>
-                    <th>작성일</th>
-                    <th>수정일</th>
+                    <td>{{info.title}}</td>
                 </tr>
-                <tr v-for="item in list">
-                    <td>{{item.bbsNum}}</td>
-                    <td>{{item.title}}</td>
-                    <td>{{item.contents}}</td>
-                    <td>{{item.hit}}</td>
-                    <td>{{item.userId}}</td>
-                    <td>{{item.cdatetime}}</td>
-                    <td>{{item.udatetime}}</td>
+                <tr>
+                    <th>글내용</th>
+                    <td>{{info.contents}}</td>
+                </tr>
+                <tr>
+                    <th>조회수</th>
+                    <td>{{info.hit}}</td>
+                </tr>
+                <tr>
+                    <th>작성일</th>
+                    <td>{{info.cdate}}</td>
                 </tr>
             </table>
+            <div>
+                <button @click="fnEdit(info.bbsNum)">수정</button>
+            </div>
         </div>
     </div>
 </body>
@@ -56,30 +58,36 @@
         data() {
             return {
                 // 변수 - (key : value)
-                list : []
+                bbsNum : "${bbsNum}",
+                info : {}
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnList: function () {
+            fnBbsInfo: function () {
                 let self = this;
-                let param = {};
+                let param = {
+                    bbsNum : self.bbsNum
+                };
                 $.ajax({
-                    url: "/bbs/list.dox",
+                    url: "/bbs/view.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
                         console.log(data);
-                        self.list = data.list;
+                        self.info = data.info;
                     }
                 });
+            },
+            fnEdit: function(bbsNum) {
+                pageChange("/bbs/edit.do", {bbsNum : bbsNum});
             }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-            self.fnList();
+            self.fnBbsInfo();
         }
     });
 

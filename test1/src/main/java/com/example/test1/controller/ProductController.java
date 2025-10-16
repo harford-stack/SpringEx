@@ -80,7 +80,7 @@ public class ProductController {
 	
 	@RequestMapping(value = "/product/payment.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public String payHistory(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+	public String payment(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap = productService.addPayHistory(map);
 		

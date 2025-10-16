@@ -92,7 +92,7 @@ public class ProductService {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		
 		try {
-			int cnt = productMapper.insertPayHistory(map);
+			productMapper.insertPayHistory(map);
 			resultMap.put("result", "success");
 		} catch (Exception e) {
 			// TODO: handle exception
