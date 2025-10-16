@@ -14,4 +14,8 @@ public class Bbs {
 	private String cdate;
 	private String udatetime;
 	
+	private String fileNo;
+	private String filePath;
+	private String fileName;
+	
 }

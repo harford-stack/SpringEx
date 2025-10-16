@@ -34,7 +34,7 @@
                 </tr>
                 <tr>
                     <th>글내용</th>
-                    <td>{{info.contents}}</td>
+                    <td v-html="info.contents"></td>
                 </tr>
                 <tr>
                     <th>조회수</th>
@@ -47,6 +47,7 @@
             </table>
             <div>
                 <button @click="fnEdit(info.bbsNum)">수정</button>
+                <button @click="fnBack">되돌아가기</button>
             </div>
         </div>
     </div>
@@ -59,7 +60,8 @@
             return {
                 // 변수 - (key : value)
                 bbsNum : "${bbsNum}",
-                info : {}
+                info : {},
+                fileList : []
             };
         },
         methods: {
@@ -77,11 +79,15 @@
                     success: function (data) {
                         console.log(data);
                         self.info = data.info;
+                        self.fileList = data.fileList;
                     }
                 });
             },
             fnEdit: function(bbsNum) {
                 pageChange("/bbs/edit.do", {bbsNum : bbsNum});
+            },
+            fnBack: function() {
+                location.href="/bbs/list.do";
             }
         }, // methods
         mounted() {

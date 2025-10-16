@@ -20,9 +20,9 @@
         th{
             background-color: burlywood;
         }
-        tr:nth-child(even){
+        /* tr:nth-child(even){
             background-color: beige;
-        }
+        } */
         input{
             width: 400px;
         }
@@ -44,13 +44,13 @@
                     <th>제목</th>
                     <td><input type="text" v-model="title"></td>
                 </tr>
-                <!-- <tr>
+                <tr>
                     <th>파일첨부</th>
                     <td><input type="file" id="file1" name="file1" accept=".jpg, .png"></td>
-                </tr> -->
+                </tr>
                 <tr>
                     <th>내용</th>
-                    <td><div v-model="contents" id="editor"></div></td>
+                    <td><div id="editor"></div></td>
                 </tr>
             </table>
             <div>
@@ -69,7 +69,8 @@
                 // 변수 - (key : value)
                 title : "",
                 userId : "${sessionId}",
-                contents : ""
+                contents : "",
+                sessionId : "${sessionId}"
             };
         },
         methods: {
@@ -88,8 +89,26 @@
                     data: param,
                     success: function (data) {
                         alert("등록되었습니다");
+                        console.log(data.bbsNum);
+                        var form = new FormData();
+                        form.append( "file1",  $("#file1")[0].files[0] );
+                        form.append( "bbsNum",  data.bbsNum);
+                        self.upload(form);  
                         // self.fnBack();
                     }
+                });
+            },
+            upload : function(form){
+                var self = this;
+                $.ajax({
+                    url : "/bbs/fileUpload.dox"
+                    , type : "POST"
+                    , processData : false
+                    , contentType : false
+                    , data : form
+                    , success:function(response) { 
+                        console.log(data);
+                    }	           
                 });
             },
             fnBack: function() {

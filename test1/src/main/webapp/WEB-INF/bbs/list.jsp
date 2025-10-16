@@ -28,11 +28,31 @@
         .red-title {
             color: red !important; /* !important를 사용하여 다른 스타일에 우선하도록 합니다. */
         }
+        .active {
+            color : black;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
+        <div>
+            <select v-model="searchOption">
+                <option value="all">:: 전체 ::</option>
+                <option value="title">:: 제목 ::</option>
+                <option value="id">:: 작성자 ::</option>
+            </select>
+            <input v-model="keyword">
+            <button @click="fnList">검색</button>
+        </div>
+        <div>
+            <select v-model="pageSize" @change="fnList">
+                <option value="3">3개씩</option>
+                <option value="5">5개씩</option>
+                <option value="10">10개씩</option>
+            </select>
+        </div>
         <div>
             <table>
                 <tr>
@@ -62,6 +82,15 @@
                 </tr>
             </table>
             <div>
+                <a v-if="page != 1" id="index" href="javascript:;" @click="fnMove(-1)">◀</a>
+                <a @click="fnPage(num)" id="index" href="javascript:;" v-for="num in index">
+                    <span :class="{active : num == page}">{{num}}</span>
+                    <!-- <span v-if="num == page" class="active">{{num}}</span>
+                    <span v-else>{{num}}</span> -->
+                </a>
+                <a v-if="page != index" id="index" href="javascript:;" @click="fnMove(1)">▶</a>
+            </div>
+            <div>
                 <a href="/bbs/add.do"><button>글쓰기</button></a>
                 <button @click="fnRemove(selectItem)">선택 삭제</button>
             </div>
@@ -76,14 +105,25 @@
             return {
                 // 변수 - (key : value)
                 list : [],
-                selectItem : ""
+                selectItem : "",
+                keyword : "", // 검색어
+                searchOption : "all", // 검색 옵션 (기본 : 전체)
+                pageSize : 3, // 한 페이지에 출력할 개수
+                page : 1, // 현재 페이지
+                index : 0 // 최대 페이지 값
+
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
             fnList: function () {
                 let self = this;
-                let param = {};
+                let param = {
+                    keyword : self.keyword,
+                    searchOption : self.searchOption,
+                    pageSize : self.pageSize,
+                    page : (self.page-1) * self.pageSize
+                };
                 $.ajax({
                     url: "/bbs/list.dox",
                     dataType: "json",
@@ -92,6 +132,7 @@
                     success: function (data) {
                         console.log(data);
                         self.list = data.list;
+                        self.index = Math.ceil(data.cnt / self.pageSize);
                     }
                 });
             },
@@ -113,6 +154,16 @@
             },
             fnView: function(bbsNum) {
                 pageChange("/bbs/view.do", {bbsNum : bbsNum});
+            },
+            fnPage: function(num) {
+                let self = this;
+                self.page = num;
+                self.fnList();
+            },
+            fnMove: function(move) {
+                let self = this;
+                self.page += move;
+                self.fnList();
             }
         }, // methods
         mounted() {

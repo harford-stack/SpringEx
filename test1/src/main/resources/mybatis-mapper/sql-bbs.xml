@@ -14,7 +14,40 @@
 				TO_CHAR(CDATETIME, 'YYYY-MM-DD')
 			) AS CDATE
 		FROM TBL_BBS B
+		WHERE 1=1
+		<if test="searchOption == 'all'">
+			AND (
+				TITLE LIKE '%' || #{keyword} || '%' OR
+				USERID LIKE '%' || #{keyword} || '%'
+			)
+		</if>
+		<if test="searchOption == 'title'">
+			AND TITLE LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="searchOption == 'id'">
+			AND USERID LIKE '%' || #{keyword} || '%'
+		</if>
 		ORDER BY BBS_NUM DESC
+		OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+	</select>
+	
+	<select id="bbsCnt" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) AS CNT
+		FROM TBL_BBS B
+		WHERE 1=1
+		
+		<if test="searchOption == 'all'">
+			AND (
+				TITLE LIKE '%' || #{keyword} || '%' OR
+				USERID LIKE '%' || #{keyword} || '%'
+			)
+		</if>
+		<if test="searchOption == 'title'">
+			AND TITLE LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="searchOption == 'id'">
+			AND USERID LIKE '%' || #{keyword} || '%'
+		</if>
 	</select>
 	
 	<insert id="insertBbs" parameterType="hashmap" useGeneratedKeys="true" keyColumn="BBS_NUM" keyProperty="bbsNum">
@@ -31,6 +64,26 @@
 		SELECT B.*, TO_CHAR(CDATETIME, 'YYYY-MM-DD') AS CDATE
 		FROM TBL_BBS B
 		WHERE BBS_NUM = #{bbsNum}
+	</select>
+	
+	<update id="updateBbs" parameterType="hashmap">
+	    UPDATE TBL_BBS
+	    SET 
+	        TITLE = #{title}, 
+	        CONTENTS = #{contents}, 
+	        UDATETIME = SYSDATE
+	    WHERE BBS_NUM = #{bbsNum}
+	</update>
+	
+	<insert id="insertBbsImg" parameterType="hashmap">
+		INSERT INTO TBL_BOARD_FILE
+		VALUES (FILE_SEQ.NEXTVAL, #{bbsNum}, #{path}, #{fileName}, #{orgName}, #{size}, #{ext})
+	</insert>
+	
+	<select id="selectFileList" parameterType="hashmap" resultType="com.example.test1.model.Bbs">
+		SELECT *
+		FROM TBL_BOARD_FILE
+		WHERE BOARDNO = #{bbsNum}
 	</select>
 
 </mapper>

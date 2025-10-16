@@ -21,8 +21,10 @@ public class BbsService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		List<Bbs> list = bbsMapper.bbsList(map);
+		int cnt = bbsMapper.bbsCnt(map);
 		
 		resultMap.put("list", list);
+		resultMap.put("cnt", cnt);
 		resultMap.put("result", "success");
 		return resultMap;
 	}
@@ -52,9 +54,26 @@ public class BbsService {
 		
 		Bbs bbs = bbsMapper.selectBbs(map);
 		
+		List<Bbs> fileList = bbsMapper.selectFileList(map);
+		resultMap.put("fileList", fileList);
+		
 		resultMap.put("info", bbs);
 		resultMap.put("result", "success");
 		return resultMap;
+	}
+	
+	public HashMap<String, Object> editBbs(HashMap<String, Object> map) {
+	    // TODO Auto-generated method stub
+	    HashMap<String, Object> resultMap = new HashMap<String, Object>();
+	    int cnt = bbsMapper.updateBbs(map);
+	    
+	    resultMap.put("result", "success");
+	    return resultMap;
+	}
+	
+	public void addBbsImg(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		int cnt = bbsMapper.insertBbsImg(map);
 	}
 
 }
