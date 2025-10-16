@@ -29,5 +29,8 @@ public interface ProductMapper {
 	
 	// 첨부파일 목록
 	List<Product> selectFileList(HashMap<String, Object> map);
+	
+	// 제품 결제 정보 삽입
+	int insertPayHistory(HashMap<String, Object> map);
 
 }

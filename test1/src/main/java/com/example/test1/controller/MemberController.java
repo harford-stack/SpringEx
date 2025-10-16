@@ -45,8 +45,8 @@ public class MemberController {
 	
 	@RequestMapping("/mgr/member/list.do") 
     public String mgr(Model model) throws Exception{ 
-		
         return "/mgr/member-list";
+        
     }
 	
 	@RequestMapping("/mgr/member/view.do") 

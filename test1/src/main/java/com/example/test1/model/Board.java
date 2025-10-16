@@ -7,6 +7,7 @@ public class Board {
 	private int boardNo;
 	private String title;
 	private String contents;
+	private String contents2;
 	private String userId;
 	private String cnt;
 	private String favorite;

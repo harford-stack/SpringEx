@@ -15,22 +15,37 @@
             text-align: center;
         }
         th{
-            background-color: beige;
+            background-color: burlywood;
         }
         tr:nth-child(even){
-            background-color: azure;
+            background-color: beige;
         }
     </style>
 </head>
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-         {{sessionName}}님 환영합니다! 메인페이지 입니다!
-         <div>
-            <a href="/board-list.do"><button>게시판으로 이동</button></a>
-            <a href="/product.do"><button>제품 목록으로</button></a>
-            <button @click="fnLogout">로그아웃</button>
-         </div>
+        <div>
+            <table>
+                <tr>
+                    <th>글번호</th>
+                    <th>글제목</th>
+                    <th>글내용</th>
+                    <th>조회수</th>
+                    <th>작성자</th>
+                    <th>작성일</th>
+                    <th>수정일</th>
+                </tr>
+                <tr v-for="item in list">
+                    <td>{{item.bbsNum}}</td>
+                    <td>{{item.title}}</td>
+                    <td>{{item.hit}}</td>
+                    <td>{{item.userId}}</td>
+                    <td>{{item.cdatetime}}</td>
+                    <td>{{item.udatetime}}</td>
+                </tr>
+            </table>
+        </div>
     </div>
 </body>
 </html>
@@ -40,23 +55,21 @@
         data() {
             return {
                 // 변수 - (key : value)
-                sessionId : "${sessionId}",
-                sessionName : "${sessionName}"
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnLogout : function () {
+            fnList: function () {
                 let self = this;
                 let param = {};
                 $.ajax({
-                    url: "/member/logout.dox",
+                    url: "/bbs/list.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-                        alert(data.msg);
-                        location.href="/member/login.do";
+                        console.log(data);
+                        self.list = data.list;
                     }
                 });
             }
@@ -64,6 +77,7 @@
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+            self.fnList();
         }
     });
 

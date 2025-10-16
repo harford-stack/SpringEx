@@ -203,9 +203,9 @@ public class MemberService {
 			// 1. 리턴 member
 			Member member = memberMapper.authMember1(map);
 			if(member != null) {
-				resultMap.put("result", "true");
+				resultMap.put("result", "success");
 			} else {
-				resultMap.put("result", "false");
+				resultMap.put("result", "fail");
 			}
 			
 			// 2. 리턴 int
@@ -235,17 +235,14 @@ public class MemberService {
 			} else {
 				String hashPwd = passwordEncoder.encode((String) map.get("pwd"));
 				map.put("hashPwd", hashPwd);
-				int cnt = memberMapper.updatePwd(map);
-				if(cnt > 0) {
-					resultMap.put("result", "true");
-					resultMap.put("msg", "수정되었습니다.");	
-				} else {
-					resultMap.put("result", "false");
-				} 
+				memberMapper.updatePwd(map);
+				resultMap.put("result", "success");
+				resultMap.put("msg", "수정되었습니다.");
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 			resultMap.put("result", "fail");
+			resultMap.put("msg", "오류가 발생했습니다..");
 			System.out.println(e.getMessage());
 		}
 		return resultMap;

@@ -53,5 +53,10 @@
 		FROM TBL_FOOD_IMG
 		WHERE FOOD_NO = #{foodNo}
 	</select>
+	
+	<insert id="insertPayHistory" parameterType="hashmap">
+		INSERT INTO PAYMENT_HISTORY
+		VALUES(#{uid}, #{userId}, #{amount}, #{foodNo}, SYSDATE)
+	</insert>
 
 </mapper>
