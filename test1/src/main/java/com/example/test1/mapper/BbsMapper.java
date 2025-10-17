@@ -12,7 +12,7 @@ import com.example.test1.model.Board;
 public interface BbsMapper {
 	
 	// 게시글 목록 호출
-	List<Bbs> bbsList(HashMap<String, Object> map);
+	List<Bbs> selectBbsList(HashMap<String, Object> map);
 	
 	// 게시글 전체 개수
 	int bbsCnt(HashMap<String, Object> map);

@@ -56,7 +56,7 @@
         <div>
             <table>
                 <tr>
-                    <th>삭제</th>
+                    <th>선택</th>
                     <th>글번호</th>
                     <th>글제목</th>
                     <th>조회수</th>
@@ -148,6 +148,8 @@
                     data: param,
                     success: function (data) {
                         alert("삭제되었습니다");
+                        self.selectItem = "";
+                        self.page = 1;
                         self.fnList();
                     }
                 });

@@ -33,7 +33,7 @@
         <div>
             <table>
                 <tr>
-                    <th><input type="checkbox" @click="fnAllCheck()"></th>
+                    <th><input type="checkbox" @click="fnAllCheck"></th>
                     <th>학번</th>
                     <th>이름</th>
                     <th>학과</th>
@@ -128,7 +128,7 @@
             fnAdd: function() {
                 location.href="stu-add.do";
             },
-            fnEdit: function() {
+            fnEdit: function(stuNo) {
                 pageChange("stu-edit.do", {stuNo : stuNo});
             },
             fnAllRemove: function() {

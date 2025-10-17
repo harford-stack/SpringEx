@@ -20,12 +20,18 @@ public class BbsService {
 	public HashMap<String, Object> getBbsList(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		List<Bbs> list = bbsMapper.bbsList(map);
-		int cnt = bbsMapper.bbsCnt(map);
+		try {
+			List<Bbs> list = bbsMapper.selectBbsList(map);
+			int cnt = bbsMapper.bbsCnt(map);
+			
+			resultMap.put("list", list);
+			resultMap.put("cnt", cnt);
+			resultMap.put("result", "success");
+		} catch (Exception e) {
+			resultMap.put("result", "fail");
+			System.out.println(e.getMessage());
+		}
 		
-		resultMap.put("list", list);
-		resultMap.put("cnt", cnt);
-		resultMap.put("result", "success");
 		return resultMap;
 	}
 	

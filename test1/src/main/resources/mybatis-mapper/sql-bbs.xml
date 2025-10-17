@@ -4,7 +4,7 @@
 	
 <mapper namespace="com.example.test1.mapper.BbsMapper">
 	
-	<select id="bbsList" parameterType="hashmap" resultType="com.example.test1.model.Bbs">
+	<select id="selectBbsList" parameterType="hashmap" resultType="com.example.test1.model.Bbs">
 		SELECT
 		    B.*, 
 		    DECODE(
