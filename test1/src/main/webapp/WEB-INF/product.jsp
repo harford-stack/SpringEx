@@ -9,6 +9,7 @@
         integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="/js/page-change.js"></script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <title>쇼핑몰 헤더</title>
     <link rel="stylesheet" href="/css/product-style.css">
 </head>
@@ -44,6 +45,7 @@
         </header>
 
         <main>
+            
             <section class="product-list">
                 <!-- 제품 항목 -->
                 <div class="product-item" v-for="item in list">
@@ -56,6 +58,7 @@
                 </div>
             </section>
         </main>
+        <div id="google_translate_element"></div>
     </div>
 </body>
 </html>
@@ -108,6 +111,7 @@
         mounted() {
             var self = this;
             self.fnList();
+            new google.translate.TranslateElement({pageLanguage: 'ko',autoDisplay: false}, 'google_translate_element');
         }
     });
     app.mount('#app');
