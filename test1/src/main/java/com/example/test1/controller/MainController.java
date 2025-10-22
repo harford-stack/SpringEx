@@ -13,4 +13,10 @@ public class MainController {
         return "/main/home";
     }
 	
+	@RequestMapping("/chatbot.do") 
+    public String chatbot(Model model) throws Exception{ 
+		
+        return "/chatbot";
+    }
+	
 }
